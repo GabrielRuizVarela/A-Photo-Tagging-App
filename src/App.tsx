@@ -26,7 +26,7 @@ const theme = {
 
 function App() {
   const images = useContext(ImagesContext);
-  const { image, id, targets, dimensions, targetImages } = images[0];
+  const { image, id, targets, dimensions } = images[0];
 
   return (
     <ThemeProvider theme={theme[1]}>
@@ -34,10 +34,9 @@ function App() {
         <Navbar />
         <FindMe
           key={id}
-          image={image}
+          LvlImage={image}
           targets={targets}
           dimensions={dimensions}
-          targetImages={targetImages}
         />
       </div>
     </ThemeProvider>

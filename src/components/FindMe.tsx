@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import ClickBox from './ClickBox';
 
@@ -12,12 +12,13 @@ const StyledImage = styled.img`
 
 const getNormalizeTargetCoord = (
   e: React.MouseEvent<HTMLImageElement, MouseEvent>,
-  targets: { x: number; y: number }[],
+  targets: { x: number; y: number; image: string }[],
   dimensions: { width: number; height: number },
 ) =>
   targets.map((target) => ({
     x: (target.x * e.currentTarget.width) / dimensions.width,
     y: (target.y * e.currentTarget.height) / dimensions.height,
+    image: target.image,
   }));
 
 const getClickCoord = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
@@ -27,11 +28,11 @@ const getClickCoord = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
   return { x: elementX, y: elementY };
 };
 
-const checkIfMatch = (
+const checkMatch = (
   clickCoord: { x: number; y: number },
-  targets: { x: number; y: number }[],
+  targets: { x: number; y: number; image: string }[],
 ) =>
-  targets.some((target) => {
+  targets.find((target) => {
     const tolerance = 0.1;
     return (
       Math.abs(target.x - clickCoord.x) < target.x * tolerance &&
@@ -40,46 +41,76 @@ const checkIfMatch = (
   });
 
 function FindMe({
-  image,
+  LvlImage,
   targets,
   dimensions,
-  targetImages,
 }: {
-  image: string;
-  targets: { x: number; y: number }[];
+  LvlImage: string;
+  targets: { x: number; y: number; image: string }[];
   dimensions: { width: number; height: number };
-  targetImages: string[];
 }) {
+  const [targetsState, setTargetsState] = useState(
+    targets.map((target) => ({
+      x: target.x,
+      y: target.y,
+      image: target.image,
+      found: false,
+    })),
+  );
   const [clickBoxVisible, setClickBoxVisible] = useState(false);
-  const [clickCoord, setClickCoord] = useState({ x: 0, y: 0 });
+  const [clickCoord, setClickCoord] = useState({ x: 100, y: 100, image: '' });
+
   const handleClick = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
     const normalizeTargetCoord = getNormalizeTargetCoord(
       e,
-      targets,
+      targetsState,
       dimensions,
     );
-    // if click outside of target, hide clickbox
     const clickOnImg = getClickCoord(e);
-    if (checkIfMatch(clickOnImg, normalizeTargetCoord)) {
-      setClickCoord(clickOnImg);
+    const match = checkMatch(clickOnImg, normalizeTargetCoord);
+    // if click outside of e.currenttarget, hide clickbox
+    // if (clickBoxRef.current !== e.currentTarget) {
+      //   setClickBoxVisible(false);
+      //   console.log('ref?');
+    // }
+    if (match) {
+      setClickCoord(match);
       setClickBoxVisible(true);
     } else {
       setClickBoxVisible(false);
     }
-    console.log(checkIfMatch(clickOnImg, normalizeTargetCoord));
   };
+
+  const handleClickBox = useCallback(
+    (e: React.MouseEvent<Element, MouseEvent>) => {
+      e.stopPropagation();
+      if (e.currentTarget.id === clickCoord.image) {
+        setTargetsState((prevState) =>
+          prevState.map((target) => {
+            if (target.image === clickCoord.image) {
+              // console.log(target);
+              return { ...target, found: true };
+            }
+            return target;
+          }),
+        );
+      }
+    },
+    [clickCoord],
+  );
 
   return (
     <>
       <StyledImage
-        src={image}
-        alt={image}
+        src={LvlImage}
+        alt={LvlImage}
         onClick={(event) => {
           handleClick(event);
         }}
       />
       <ClickBox
-        targetImages={targetImages}
+        handleClickBox={handleClickBox}
+        targets={targetsState}
         visible={clickBoxVisible}
         clickCoord={clickCoord}
       />

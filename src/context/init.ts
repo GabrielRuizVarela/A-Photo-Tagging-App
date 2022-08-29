@@ -11,11 +11,10 @@ const ImagesContext = createContext([
     id: 1,
     dimensions: { width: 1080, height: 2340 },
     targets: [
-      { x: 378, y: 1410 },
-      { x: 170, y: 1070 },
-      { x: 510, y: 1351 },
+      { x: 378, y: 1410, image: lvl1Target1Toad },
+      { x: 170, y: 1070, image: lvl1Target2Kirby },
+      { x: 510, y: 1351, image: lvl1TargetDiddyKong },
     ],
-    targetImages: [lvl1Target1Toad, lvl1Target2Kirby, lvl1TargetDiddyKong],
   },
 ]);
 
