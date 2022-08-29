@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import ClickBox from './ClickBox';
 
 const StyledImage = styled.img`
+  position: relative;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -41,31 +43,47 @@ function FindMe({
   image,
   targets,
   dimensions,
+  targetImages,
 }: {
   image: string;
   targets: { x: number; y: number }[];
   dimensions: { width: number; height: number };
+  targetImages: string[];
 }) {
+  const [clickBoxVisible, setClickBoxVisible] = useState(false);
+  const [clickCoord, setClickCoord] = useState({ x: 0, y: 0 });
   const handleClick = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
     const normalizeTargetCoord = getNormalizeTargetCoord(
       e,
       targets,
       dimensions,
     );
-
-    const clickCoord = getClickCoord(e);
-
-    console.log(checkIfMatch(clickCoord, normalizeTargetCoord));
+    // if click outside of target, hide clickbox
+    const clickOnImg = getClickCoord(e);
+    if (checkIfMatch(clickOnImg, normalizeTargetCoord)) {
+      setClickCoord(clickOnImg);
+      setClickBoxVisible(true);
+    } else {
+      setClickBoxVisible(false);
+    }
+    console.log(checkIfMatch(clickOnImg, normalizeTargetCoord));
   };
 
   return (
-    <StyledImage
-      src={image}
-      alt="image"
-      onClick={(event) => {
-        handleClick(event);
-      }}
-    />
+    <>
+      <StyledImage
+        src={image}
+        alt={image}
+        onClick={(event) => {
+          handleClick(event);
+        }}
+      />
+      <ClickBox
+        targetImages={targetImages}
+        visible={clickBoxVisible}
+        clickCoord={clickCoord}
+      />
+    </>
   );
 }
 

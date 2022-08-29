@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 // import './App.css';
 // import styled from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 import ImagesContext from './context/init';
 import FindMe from './components/FindMe';
 import Navbar from './components/LeftBar';
@@ -16,20 +17,30 @@ import Navbar from './components/LeftBar';
 //     y: number;
 //   }[];
 // }
+const theme = {
+  1: {
+    primary: 'rgb(202, 233, 234)',
+    secondary: 'rgb(75,31,35)',
+  },
+};
 
 function App() {
   const images = useContext(ImagesContext);
-  const { image, id, targets, dimensions } = images[0];
+  const { image, id, targets, dimensions, targetImages } = images[0];
+
   return (
-    <div className="App">
-      <Navbar />
-      <FindMe
-        key={id}
-        image={image}
-        targets={targets}
-        dimensions={dimensions}
-      />
-    </div>
+    <ThemeProvider theme={theme[1]}>
+      <div className="App">
+        <Navbar />
+        <FindMe
+          key={id}
+          image={image}
+          targets={targets}
+          dimensions={dimensions}
+          targetImages={targetImages}
+        />
+      </div>
+    </ThemeProvider>
   );
 }
 

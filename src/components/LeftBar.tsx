@@ -8,11 +8,11 @@ const StyledNavbar = styled.nav`
   grid-template-columns: 1fr;
   justify-content: center;
   align-items: start;
-  background-color: #000;
-  border-bottom: 1px solid #e6e6e6;
+  background-color: ${({ theme }) => theme.primary};
+  border-bottom: 1px solid ${({ theme }) => theme.secondary};
   overflow: scroll;
   img {
-    border: 1px solid white;
+    border: 1px solid ${({ theme }) => theme.secondary};
     aspect-ratio: 1 / 1;
     width: 100%;
     height: 100%;
