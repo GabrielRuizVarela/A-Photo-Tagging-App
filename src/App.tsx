@@ -4,7 +4,6 @@ import React, { useContext } from 'react';
 import { ThemeProvider } from 'styled-components';
 import ImagesContext from './context/init';
 import FindMe from './components/FindMe';
-import Navbar from './components/LeftBar';
 
 // interface ContextInterface {
 //   image: string;
@@ -31,7 +30,6 @@ function App() {
   return (
     <ThemeProvider theme={theme[1]}>
       <div className="App">
-        <Navbar />
         <FindMe
           key={id}
           LvlImage={image}

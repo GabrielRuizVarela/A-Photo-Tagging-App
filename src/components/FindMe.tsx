@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import ClickBox from './ClickBox';
+import RightBar from './RightBar';
+import LeftBar from './LeftBar';
 
 const StyledImage = styled.img`
   position: relative;
@@ -46,17 +48,10 @@ function FindMe({
   dimensions,
 }: {
   LvlImage: string;
-  targets: { x: number; y: number; image: string }[];
+  targets: { x: number; y: number; image: string; found: boolean }[];
   dimensions: { width: number; height: number };
 }) {
-  const [targetsState, setTargetsState] = useState(
-    targets.map((target) => ({
-      x: target.x,
-      y: target.y,
-      image: target.image,
-      found: false,
-    })),
-  );
+  const [targetsState, setTargetsState] = useState(targets);
   const [clickBoxVisible, setClickBoxVisible] = useState(false);
   const [clickCoord, setClickCoord] = useState({ x: 100, y: 100, image: '' });
 
@@ -70,8 +65,8 @@ function FindMe({
     const match = checkMatch(clickOnImg, normalizeTargetCoord);
     // if click outside of e.currenttarget, hide clickbox
     // if (clickBoxRef.current !== e.currentTarget) {
-      //   setClickBoxVisible(false);
-      //   console.log('ref?');
+    //   setClickBoxVisible(false);
+    //   console.log('ref?');
     // }
     if (match) {
       setClickCoord(match);
@@ -88,7 +83,7 @@ function FindMe({
         setTargetsState((prevState) =>
           prevState.map((target) => {
             if (target.image === clickCoord.image) {
-              // console.log(target);
+              setClickBoxVisible(false);
               return { ...target, found: true };
             }
             return target;
@@ -101,6 +96,7 @@ function FindMe({
 
   return (
     <>
+      <LeftBar />
       <StyledImage
         src={LvlImage}
         alt={LvlImage}
@@ -114,6 +110,7 @@ function FindMe({
         visible={clickBoxVisible}
         clickCoord={clickCoord}
       />
+      <RightBar targets={targetsState} />
     </>
   );
 }
