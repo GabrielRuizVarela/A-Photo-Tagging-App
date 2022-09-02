@@ -21,13 +21,23 @@ const StyledNavbar = styled.nav`
   }
 `;
 
-function NavBar() {
+function NavBar({
+  selectLevel,
+}: {
+  selectLevel: (event: React.MouseEvent<HTMLImageElement>) => void;
+}) {
   const images = useContext(ImagesContext);
   return (
     <StyledNavbar>
       {images.map((image) => (
         <div key={image.id}>
-          <img src={image.image} alt={image.alt} />
+          <img
+            role="presentation"
+            onClick={(e) => selectLevel(e)}
+            id={image.id}
+            src={image.image}
+            alt={image.alt}
+          />
         </div>
       ))}
     </StyledNavbar>

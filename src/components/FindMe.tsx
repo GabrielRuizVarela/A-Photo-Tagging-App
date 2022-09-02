@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { motion, useAnimationControls } from 'framer-motion';
 import ClickBox from './ClickBox';
 import RightBar from './RightBar';
 import LeftBar from './LeftBar';
+import ImagesContext from '../context/init';
 
-const StyledImage = styled.img`
+const StyledImage = styled(motion.img)`
   position: relative;
   width: 100%;
   height: 100%;
@@ -42,18 +44,15 @@ const checkMatch = (
     );
   });
 
-function FindMe({
-  LvlImage,
-  targets,
-  dimensions,
-}: {
-  LvlImage: string;
-  targets: { x: number; y: number; image: string; found: boolean }[];
-  dimensions: { width: number; height: number };
-}) {
+function FindMe() {
+  const images = useContext(ImagesContext);
+  const { image, id, targets, dimensions } = images[0];
+
   const [targetsState, setTargetsState] = useState(targets);
   const [clickBoxVisible, setClickBoxVisible] = useState(false);
   const [clickCoord, setClickCoord] = useState({ x: 100, y: 100, image: '' });
+  const [score, setScore] = useState(0);
+  const [LvlImage, setLvlImage] = useState(image);
 
   const handleClick = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
     const normalizeTargetCoord = getNormalizeTargetCoord(
@@ -76,41 +75,124 @@ function FindMe({
     }
   };
 
+  const controls = useAnimationControls();
+
   const handleClickBox = useCallback(
     (e: React.MouseEvent<Element, MouseEvent>) => {
       e.stopPropagation();
       if (e.currentTarget.id === clickCoord.image) {
-        setTargetsState((prevState) =>
-          prevState.map((target) => {
-            if (target.image === clickCoord.image) {
-              setClickBoxVisible(false);
-              return { ...target, found: true };
-            }
-            return target;
-          }),
-        );
+        // if some match
+        if (
+          targetsState.find((target) => target.image === e.currentTarget.id)
+        ) {
+          setTargetsState((prevState) =>
+            prevState.map((target) => {
+              if (target.image === clickCoord.image) {
+                setClickBoxVisible(false);
+                return { ...target, found: true };
+              }
+              // todo: animate: shake clickbox if wrong target
+
+              return target;
+            }),
+          );
+        }
+      } else {
+        controls.start({
+          x: [0, 5, -5, 5, -5, 5, -5, 0],
+        });
       }
     },
     [clickCoord],
   );
 
+  const controlImgAnimation = useAnimationControls();
+  useEffect(() => {
+    if (targetsState.every((target) => target.found)) {
+      // stop timer
+      controlImgAnimation.start({
+        // border: '4px solid green',
+        filter: 'hue-rotate(720deg)',
+        transition: { duration: 1.5 },
+      });
+      const posibleScore = parseInt(
+        document.getElementById('time')?.textContent || '0',
+        10,
+      );
+      if (posibleScore > score) {
+        setScore(posibleScore);
+      }
+    }
+  }, [targetsState]);
+
+  const [reset, setReset] = useState(false);
+  const resetLevel = () => {
+    setTargetsState(targets);
+    setReset((prevState) => !prevState);
+    controlImgAnimation.start({
+      filter: 'hue-rotate(0deg)',
+    });
+  };
+
+  const selectLevel = useCallback((e) => {
+    const lvl = e.currentTarget.id;
+    const lvlImage = images.find((img) => img.id === Number(lvl));
+    console.log(lvlImage);
+    if (lvlImage) {
+      setLvlImage(lvlImage.image);
+      setTargetsState(lvlImage.targets);
+      setReset((prevState) => !prevState);
+    }
+  }, []);
+
   return (
     <>
-      <LeftBar />
+      <LeftBar selectLevel={selectLevel} />
       <StyledImage
-        src={LvlImage}
-        alt={LvlImage}
         onClick={(event) => {
           handleClick(event);
         }}
+        animate={controlImgAnimation}
+        src={LvlImage}
+        alt={LvlImage}
       />
-      <ClickBox
-        handleClickBox={handleClickBox}
+      <motion.div
+        animate={controls}
+        style={{ width: '100%', position: 'absolute' }}
+      >
+        <ClickBox
+          handleClickBox={handleClickBox}
+          targets={targetsState}
+          visible={clickBoxVisible}
+          clickCoord={clickCoord}
+        />
+      </motion.div>
+      <RightBar
         targets={targetsState}
-        visible={clickBoxVisible}
-        clickCoord={clickCoord}
+        score={score}
+        reset={reset}
+        selectLevel={selectLevel}
       />
-      <RightBar targets={targetsState} />
+      {targetsState.every((target) => target.found) && (
+        <button
+          type="button"
+          onClick={resetLevel}
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '2rem',
+            padding: '1rem',
+            borderRadius: '1rem',
+            border: 'none',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            color: 'white',
+          }}
+        >
+          Reset Level
+        </button>
+      )}
     </>
   );
 }

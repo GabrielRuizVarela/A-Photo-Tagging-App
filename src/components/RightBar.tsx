@@ -12,7 +12,7 @@ const StyledRightBar = styled.div`
     height: auto;
     aspect-ratio: 1 / 1;
   }
-  `;
+`;
 
 const StyledImg = styled.img<{ readonly found: boolean }>`
   opacity: ${({ found }) => (found ? '0.4' : '1')};
@@ -21,10 +21,12 @@ const StyledImg = styled.img<{ readonly found: boolean }>`
 
 interface RightBarInterface {
   readonly targets: { x: number; y: number; image: string; found: boolean }[];
+  readonly score: number;
+  readonly reset: boolean;
 }
 
 function RightBar(props: RightBarInterface) {
-  const { targets } = props;
+  const { targets, score, reset, selectLevel } = props;
   // if all target found then stop the timer
   const allFound = targets.every((target) => target.found);
   return (
@@ -39,7 +41,7 @@ function RightBar(props: RightBarInterface) {
           alt={target.image}
         />
       ))}
-      <Timer allFound={allFound} />
+      <Timer allFound={allFound} score={score} reset={reset} />
     </StyledRightBar>
   );
 }

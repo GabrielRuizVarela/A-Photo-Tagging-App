@@ -31,8 +31,8 @@ function App() {
     <ThemeProvider theme={theme[1]}>
       <div className="App">
         <FindMe
+          image={image}
           key={id}
-          LvlImage={image}
           targets={targets}
           dimensions={dimensions}
         />

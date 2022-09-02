@@ -1,6 +1,14 @@
 import React, { useEffect } from 'react';
 
-function Timer({ allFound }: { allFound: boolean }) {
+function Timer({
+  allFound,
+  score,
+  reset,
+}: {
+  allFound: boolean;
+  score: number;
+  reset: boolean;
+}) {
   const [time, setTime] = React.useState(0);
   const [loaded, setLoaded] = React.useState(false);
   // const [timerId, setTimerId] = React.useState(0);
@@ -36,10 +44,15 @@ function Timer({ allFound }: { allFound: boolean }) {
     return () => clearInterval(timerId);
   }, [time]);
 
+  useEffect(() => {
+      setTime(0);
+  }, [reset]);
+
   return (
     <div>
       <h1>Timer</h1>
-      <div>{time}</div>
+      <div className="highScore">Highscore: {score}</div>
+      <div id="time">{time}</div>
     </div>
   );
 }

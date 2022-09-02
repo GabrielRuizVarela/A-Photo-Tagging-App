@@ -1,31 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 // eslint-disable-next-line import/no-unresolved
-import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface StyleClickBoxInterface {
   readonly visible: boolean;
   readonly clickCoord: { x: number; y: number };
 }
 
-const StyledClickBox = styled.div<StyleClickBoxInterface>`
+const StyledClickBox = styled(motion.div)<StyleClickBoxInterface>`
   position: absolute;
-  display: ${({ visible }) => (visible ? 'grid' : 'none')};
-  /* grid-template-rows: auto; */
-  /* grid-template-columns: 2rem; */
-  width: 10%;
+
+  display: grid;
+  width: 5%;
   height: auto;
   background-color: ${({ theme }) => theme.secondary};
   gap: 0.5rem;
   padding: 0.5rem;
   top: ${({ clickCoord }) => clickCoord.y}px;
-  left: calc(${({ clickCoord }) => clickCoord.x}px + 1rem);
+  left: calc(${({ clickCoord }) => clickCoord.x}px + 10%);
+  opacity: 0.7;
   img {
     width: 100%;
     height: 100%;
   }
-  /* width: 3rem; */
-  /* height: 50px; */
 `;
 interface ClickBoxInterface {
   readonly targets: { x: number; y: number; image: string; found: boolean }[];
@@ -34,27 +32,41 @@ interface ClickBoxInterface {
   handleClickBox: (event: React.MouseEvent<Element, MouseEvent>) => void;
 }
 
+const variants = {
+  visible: { visibility: 'visible', opacity: 0.7, x: 0 },
+  hidden: {
+    visibility: 'hidden',
+    opacity: 0,
+    x: 10,
+    transition: { delay: 0.1 },
+  },
+};
+
 function ClickBox(props: ClickBoxInterface) {
   const { targets, visible, clickCoord, handleClickBox } = props;
-  const [parent] = useAutoAnimate({
-    duration: 200,
-    disrespectUserMotionPreference: true, // TODO: remove this, remember you have reduce animation in the OS
-  });
 
   return (
-    <StyledClickBox visible={visible} clickCoord={clickCoord} ref={parent}>
-      {targets.map((target) =>
-        !target.found ? (
-          <img
-            onClick={(event) => handleClickBox(event)}
-            role="presentation"
-            key={target.image}
-            id={target.image}
-            src={target.image}
-            alt={target.image}
-          />
-        ) : null,
-      )}
+    <StyledClickBox
+      animate={visible ? 'visible' : 'hidden'}
+      variants={variants}
+      // transition={{ delay: 0.5 }}
+      visible={visible}
+      clickCoord={clickCoord}
+    >
+      <AnimatePresence>
+        {targets.map((target) =>
+          !target.found ? (
+            <img
+              onClick={(event) => handleClickBox(event)}
+              role="presentation"
+              key={target.image}
+              id={target.image}
+              src={target.image}
+              alt={target.image}
+            />
+          ) : null,
+        )}
+      </AnimatePresence>
     </StyledClickBox>
   );
 }
