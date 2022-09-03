@@ -12,8 +12,13 @@
 }
 
 .App {
+  min-width: 80vw;
+  min-height: 100vw;
   display: grid;
-  grid-template-columns: 1fr 4fr 1fr;
+  /* grid-template-columns: 1fr; */
+  justify-content: center;
+  justify-items: center;
+  /* width: 80%; */
 }
 /* :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;

@@ -5,10 +5,16 @@ import Timer from './Timer';
 const StyledRightBar = styled.div`
   display: flex;
   flex-direction: column;
+  position: fixed;
+  right: 0;
+  width: 16%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   padding: 1rem;
   background-color: ${({ theme }) => theme.primary};
   img {
-    width: 100%;
+    width: 50%;
     height: auto;
     aspect-ratio: 1 / 1;
   }
@@ -26,7 +32,7 @@ interface RightBarInterface {
 }
 
 function RightBar(props: RightBarInterface) {
-  const { targets, score, reset, selectLevel } = props;
+  const { targets, score, reset } = props;
   // if all target found then stop the timer
   const allFound = targets.every((target) => target.found);
   return (

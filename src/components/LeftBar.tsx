@@ -6,6 +6,13 @@ const StyledNavbar = styled.nav`
   display: grid;
   padding: 1rem;
   grid-template-columns: 1fr;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  width: 16%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   justify-content: center;
   align-items: start;
   background-color: ${({ theme }) => theme.primary};
@@ -34,7 +41,7 @@ function NavBar({
           <img
             role="presentation"
             onClick={(e) => selectLevel(e)}
-            id={image.id}
+            id={String(image.id)}
             src={image.image}
             alt={image.alt}
           />

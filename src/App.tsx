@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 // import './App.css';
 // import styled from 'styled-components';
-import { ThemeProvider } from 'styled-components';
-import ImagesContext from './context/init';
+
 import FindMe from './components/FindMe';
 
 // interface ContextInterface {
@@ -16,28 +15,13 @@ import FindMe from './components/FindMe';
 //     y: number;
 //   }[];
 // }
-const theme = {
-  1: {
-    primary: 'rgb(202, 233, 234)',
-    secondary: 'rgb(75,31,35)',
-  },
-};
+
 
 function App() {
-  const images = useContext(ImagesContext);
-  const { image, id, targets, dimensions } = images[0];
-
   return (
-    <ThemeProvider theme={theme[1]}>
       <div className="App">
-        <FindMe
-          image={image}
-          key={id}
-          targets={targets}
-          dimensions={dimensions}
-        />
+        <FindMe />
       </div>
-    </ThemeProvider>
   );
 }
 

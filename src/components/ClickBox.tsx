@@ -14,7 +14,7 @@ const StyledClickBox = styled(motion.div)<StyleClickBoxInterface>`
   display: grid;
   width: 5%;
   height: auto;
-  background-color: ${({ theme }) => theme.secondary};
+  background-color: ${({ theme }) => theme.primary};
   gap: 0.5rem;
   padding: 0.5rem;
   top: ${({ clickCoord }) => clickCoord.y}px;

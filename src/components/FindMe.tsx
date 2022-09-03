@@ -1,17 +1,35 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { motion, useAnimationControls } from 'framer-motion';
 import ClickBox from './ClickBox';
 import RightBar from './RightBar';
 import LeftBar from './LeftBar';
 import ImagesContext from '../context/init';
 
+const theme = {
+  1: {
+    // 53	47	124
+    primary: 'white',
+    secondary: 'rgb(53, 47, 124)',
+  },
+  2: {
+    primary: 'white',
+    secondary: 'rgb(178, 42, 40)',
+  },
+  3: {
+    primary: 'white',
+    secondary: 'rgb(202, 233, 234)',
+  },
+};
+
 const StyledImage = styled(motion.img)`
   position: relative;
+  /* z-index: 100; */
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  justify-self: center;
 `;
 
 const getNormalizeTargetCoord = (
@@ -46,27 +64,28 @@ const checkMatch = (
 
 function FindMe() {
   const images = useContext(ImagesContext);
-  const { image, id, targets, dimensions } = images[0];
+  const { image, targets } = images[0];
 
   const [targetsState, setTargetsState] = useState(targets);
   const [clickBoxVisible, setClickBoxVisible] = useState(false);
   const [clickCoord, setClickCoord] = useState({ x: 100, y: 100, image: '' });
   const [score, setScore] = useState(0);
   const [LvlImage, setLvlImage] = useState(image);
+  const [themeState, setThemeState] = useState(1);
 
   const handleClick = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+    const index = images.filter((elem) => {
+      if (elem.image === LvlImage) {
+        return elem;
+      }
+    });
     const normalizeTargetCoord = getNormalizeTargetCoord(
       e,
       targetsState,
-      dimensions,
+      index[0].dimensions,
     );
     const clickOnImg = getClickCoord(e);
     const match = checkMatch(clickOnImg, normalizeTargetCoord);
-    // if click outside of e.currenttarget, hide clickbox
-    // if (clickBoxRef.current !== e.currentTarget) {
-    //   setClickBoxVisible(false);
-    //   console.log('ref?');
-    // }
     if (match) {
       setClickCoord(match);
       setClickBoxVisible(true);
@@ -91,8 +110,6 @@ function FindMe() {
                 setClickBoxVisible(false);
                 return { ...target, found: true };
               }
-              // todo: animate: shake clickbox if wrong target
-
               return target;
             }),
           );
@@ -134,19 +151,22 @@ function FindMe() {
     });
   };
 
-  const selectLevel = useCallback((e) => {
-    const lvl = e.currentTarget.id;
-    const lvlImage = images.find((img) => img.id === Number(lvl));
-    console.log(lvlImage);
-    if (lvlImage) {
-      setLvlImage(lvlImage.image);
-      setTargetsState(lvlImage.targets);
-      setReset((prevState) => !prevState);
-    }
-  }, []);
+  const selectLevel = useCallback(
+    (e: React.MouseEvent<Element, MouseEvent>) => {
+      const lvl = e.currentTarget.id;
+      const lvlImage = images.find((img) => img.id === Number(lvl));
+      if (lvlImage) {
+        setLvlImage(lvlImage.image);
+        setThemeState(Number(lvl));
+        setTargetsState(lvlImage.targets);
+        setReset((prevState) => !prevState);
+      }
+    },
+    [],
+  );
 
   return (
-    <>
+    <ThemeProvider theme={theme[themeState]}>
       <LeftBar selectLevel={selectLevel} />
       <StyledImage
         onClick={(event) => {
@@ -167,12 +187,7 @@ function FindMe() {
           clickCoord={clickCoord}
         />
       </motion.div>
-      <RightBar
-        targets={targetsState}
-        score={score}
-        reset={reset}
-        selectLevel={selectLevel}
-      />
+      <RightBar targets={targetsState} score={score} reset={reset} />
       {targetsState.every((target) => target.found) && (
         <button
           type="button"
@@ -193,7 +208,7 @@ function FindMe() {
           Reset Level
         </button>
       )}
-    </>
+    </ThemeProvider>
   );
 }
 
