@@ -19,6 +19,17 @@
   justify-content: center;
   justify-items: center;
   /* width: 80%; */
+  /* add media query for mobile */
+}
+@media (max-width: 768px) {
+  .App {
+    min-width: 100vw;
+    min-height: 100vh;
+    grid-template-rows: auto auto auto;
+  }
+  .App > :nth-child(1) {
+    position: relative;
+  }
 }
 /* :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;

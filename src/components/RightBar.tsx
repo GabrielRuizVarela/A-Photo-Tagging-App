@@ -22,6 +22,23 @@ const StyledRightBar = styled.div`
     width: 50%;
     height: auto;
     aspect-ratio: 1 / 1;
+    cursor: pointer;
+  }
+  @media (max-width: 768px) {
+    flex-direction: row;
+    font-size: 0.6rem;
+    gap: 0.5rem;
+    padding: 0.4rem;
+    /* align-items: flex-start; */
+    img {
+      width: 20%;
+    }
+    p {
+      text-align: center;
+    }
+    position: static;
+    width: 100%;
+    height: auto;
   }
 `;
 

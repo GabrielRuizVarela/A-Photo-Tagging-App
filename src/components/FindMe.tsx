@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { motion, useAnimationControls } from 'framer-motion';
+import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
 import ClickBox from './ClickBox';
 import RightBar from './RightBar';
 import LeftBar from './LeftBar';
@@ -18,7 +18,7 @@ const theme = [
   },
   {
     primary: 'white',
-    secondary: 'rgb(202, 233, 234)',
+    secondary: 'rgb(84, 161, 195)',
   },
 ];
 
@@ -114,15 +114,7 @@ function FindMe() {
             });
             return { ...prevState, targets: newTargets };
           });
-          // setTargetsState((prevState) =>
-          //   prevState.map((target) => {
-          //     if (target.image === clickCoord.image) {
-          //       setClickBoxVisible(false);
-          //       return { ...target, found: true };
-          //     }
-          //     return target;
-          //   }),
-          // );
+          setClickBoxVisible(false);
         }
       } else {
         controls.start({
@@ -184,51 +176,53 @@ function FindMe() {
 
   return (
     <ThemeProvider theme={theme[themeState - 1]}>
-      <LeftBar selectLevel={selectLevel} />
-      <StyledImage
-        onClick={(event) => {
-          handleClick(event);
-        }}
-        animate={controlImgAnimation}
-        src={levelState.image}
-        alt={levelState.image}
-      />
-      <motion.div
-        animate={controls}
-        style={{ width: '100%', position: 'absolute' }}
-      >
-        <ClickBox
-          handleClickBox={handleClickBox}
-          targets={levelState.targets}
-          visible={clickBoxVisible}
-          clickCoord={clickCoord}
-        />
-      </motion.div>
-      <RightBar
-        targets={levelState.targets}
-        score={levelState.highScore}
-        reset={reset}
-      />
-      {levelState.targets.every((target) => target.found) && (
-        <button
-          type="button"
-          onClick={resetLevel}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '2rem',
-            padding: '1rem',
-            borderRadius: '1rem',
-            border: 'none',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            color: 'white',
+      <AnimatePresence>
+        <LeftBar selectLevel={selectLevel} />
+        <StyledImage
+          onClick={(event) => {
+            handleClick(event);
           }}
+          animate={controlImgAnimation}
+          src={levelState.image}
+          alt={levelState.image}
+        />
+        <motion.div
+          animate={controls}
+          style={{ width: '100%', position: 'absolute' }}
         >
-          Reset Level
-        </button>
-      )}
+          <ClickBox
+            handleClickBox={handleClickBox}
+            targets={levelState.targets}
+            visible={clickBoxVisible}
+            clickCoord={clickCoord}
+          />
+        </motion.div>
+        <RightBar
+          targets={levelState.targets}
+          score={levelState.highScore}
+          reset={reset}
+        />
+        {levelState.targets.every((target) => target.found) && (
+          <button
+            type="button"
+            onClick={resetLevel}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: '2rem',
+              padding: '1rem',
+              borderRadius: '1rem',
+              border: 'none',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+            }}
+          >
+            Reset Level
+          </button>
+        )}
+      </AnimatePresence>
     </ThemeProvider>
   );
 }
