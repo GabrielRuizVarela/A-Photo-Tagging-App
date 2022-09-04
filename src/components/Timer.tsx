@@ -51,7 +51,8 @@ function Timer({
   return (
     <div>
       <div className="highScore">Highscore: {score}</div>
-      <div id="time">Time: {time}</div>
+      <span>Time:</span>
+      <span id="time">{time}</span>
     </div>
   );
 }

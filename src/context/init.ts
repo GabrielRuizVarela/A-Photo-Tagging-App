@@ -18,6 +18,7 @@ const ImagesContext = createContext([
     alt: 'Playstation 2 theme level',
     id: 1,
     dimensions: { width: 1082, height: 1600 },
+    highScore: 0,
     targets: [
       { x: 727, y: 851, image: lvl1Target1Gta, found: false },
       { x: 258, y: 854, image: lvl1Target2Kratos, found: false },
@@ -29,6 +30,7 @@ const ImagesContext = createContext([
     alt: 'Nintendo theme level',
     id: 2,
     dimensions: { width: 1082, height: 1600 },
+    highScore: 0,
     targets: [
       { x: 163, y: 635, image: lvl2Target1Fox, found: false },
       { x: 774, y: 1005, image: lvl2Target2Bomb, found: false },
@@ -40,6 +42,7 @@ const ImagesContext = createContext([
     alt: 'Playstation theme level',
     id: 3,
     dimensions: { width: 1082, height: 1600 },
+    highScore: 0,
     targets: [
       { x: 610, y: 950, image: lvl3Target1Crash, found: false },
       { x: 358, y: 830, image: lvl3Target2LaraCroft, found: false },

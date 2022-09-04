@@ -63,25 +63,24 @@ const checkMatch = (
   });
 
 function FindMe() {
-  const images = useContext(ImagesContext);
-  const { image, targets } = images[0];
+  const initContext = useContext(ImagesContext);
 
-  const [targetsState, setTargetsState] = useState(targets);
+  const [levelState, setLevelState] = useState(initContext[0]);
+
   const [clickBoxVisible, setClickBoxVisible] = useState(false);
   const [clickCoord, setClickCoord] = useState({ x: 100, y: 100, image: '' });
-  const [score, setScore] = useState(0);
-  const [LvlImage, setLvlImage] = useState(image);
   const [themeState, setThemeState] = useState(1);
+  const [reset, setReset] = useState(false);
 
   const handleClick = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
-    const index = images.filter((elem) => {
-      if (elem.image === LvlImage) {
+    const index = initContext.filter((elem) => {
+      if (elem.image === levelState.image) {
         return elem;
       }
     });
     const normalizeTargetCoord = getNormalizeTargetCoord(
       e,
-      targetsState,
+      levelState.targets,
       index[0].dimensions,
     );
     const clickOnImg = getClickCoord(e);
@@ -102,17 +101,28 @@ function FindMe() {
       if (e.currentTarget.id === clickCoord.image) {
         // if some match
         if (
-          targetsState.find((target) => target.image === e.currentTarget.id)
+          levelState.targets.find(
+            (target) => target.image === e.currentTarget.id,
+          )
         ) {
-          setTargetsState((prevState) =>
-            prevState.map((target) => {
+          setLevelState((prevState) => {
+            const newTargets = prevState.targets.map((target) => {
               if (target.image === clickCoord.image) {
-                setClickBoxVisible(false);
                 return { ...target, found: true };
               }
               return target;
-            }),
-          );
+            });
+            return { ...prevState, targets: newTargets };
+          });
+          // setTargetsState((prevState) =>
+          //   prevState.map((target) => {
+          //     if (target.image === clickCoord.image) {
+          //       setClickBoxVisible(false);
+          //       return { ...target, found: true };
+          //     }
+          //     return target;
+          //   }),
+          // );
         }
       } else {
         controls.start({
@@ -125,7 +135,7 @@ function FindMe() {
 
   const controlImgAnimation = useAnimationControls();
   useEffect(() => {
-    if (targetsState.every((target) => target.found)) {
+    if (levelState.targets.every((target) => target.found)) {
       // stop timer
       controlImgAnimation.start({
         // border: '4px solid green',
@@ -136,15 +146,22 @@ function FindMe() {
         document.getElementById('time')?.textContent || '0',
         10,
       );
-      if (posibleScore > score) {
-        setScore(posibleScore);
+      if (posibleScore > levelState.highScore) {
+        setLevelState((prevState) => ({
+          ...prevState,
+          highScore: posibleScore,
+        }));
       }
     }
-  }, [targetsState]);
+  }, [levelState.targets]);
 
-  const [reset, setReset] = useState(false);
   const resetLevel = () => {
-    setTargetsState(targets);
+    // setTargetsState(targets);
+    // setLevelState(initContext[themeState - 1 || 0]);
+    setLevelState((prevState) => ({
+      ...prevState,
+      targets: prevState.targets.map((target) => ({ ...target, found: false })),
+    }));
     setReset((prevState) => !prevState);
     controlImgAnimation.start({
       filter: 'hue-rotate(0deg)',
@@ -153,12 +170,12 @@ function FindMe() {
 
   const selectLevel = useCallback(
     (e: React.MouseEvent<Element, MouseEvent>) => {
-      const lvl = e.currentTarget.id;
-      const lvlImage = images.find((img) => img.id === Number(lvl));
+      const lvl = Number(e.currentTarget.id);
+      const lvlImage = initContext.find((img) => img.id === lvl);
       if (lvlImage) {
-        setLvlImage(lvlImage.image);
         setThemeState(Number(lvl));
-        setTargetsState(lvlImage.targets);
+        // setTargetsState(lvlImage.targets);
+        setLevelState(initContext[lvl - 1]);
         setReset((prevState) => !prevState);
       }
     },
@@ -173,8 +190,8 @@ function FindMe() {
           handleClick(event);
         }}
         animate={controlImgAnimation}
-        src={LvlImage}
-        alt={LvlImage}
+        src={levelState.image}
+        alt={levelState.image}
       />
       <motion.div
         animate={controls}
@@ -182,13 +199,17 @@ function FindMe() {
       >
         <ClickBox
           handleClickBox={handleClickBox}
-          targets={targetsState}
+          targets={levelState.targets}
           visible={clickBoxVisible}
           clickCoord={clickCoord}
         />
       </motion.div>
-      <RightBar targets={targetsState} score={score} reset={reset} />
-      {targetsState.every((target) => target.found) && (
+      <RightBar
+        targets={levelState.targets}
+        score={levelState.highScore}
+        reset={reset}
+      />
+      {levelState.targets.every((target) => target.found) && (
         <button
           type="button"
           onClick={resetLevel}
