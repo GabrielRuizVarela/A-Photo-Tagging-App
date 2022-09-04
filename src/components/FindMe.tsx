@@ -178,14 +178,19 @@ function FindMe() {
     <ThemeProvider theme={theme[themeState - 1]}>
       <AnimatePresence>
         <LeftBar selectLevel={selectLevel} />
-        <StyledImage
-          onClick={(event) => {
-            handleClick(event);
-          }}
-          animate={controlImgAnimation}
-          src={levelState.image}
-          alt={levelState.image}
-        />
+        <motion.div animate={controlImgAnimation}>
+          <StyledImage
+            onClick={(event) => {
+              handleClick(event);
+            }}
+            exit={{ opacity: 0, x: '100%' }}
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            key={levelState.id}
+            src={levelState.image}
+            alt={levelState.image}
+          />
+        </motion.div>
         <motion.div
           animate={controls}
           style={{ width: '100%', position: 'absolute' }}

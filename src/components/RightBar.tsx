@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 import Timer from './Timer';
@@ -42,7 +43,7 @@ const StyledRightBar = styled.div`
   }
 `;
 
-const StyledImg = styled.img<{ readonly found: boolean }>`
+const StyledImg = styled(motion.img)<{ readonly found: boolean }>`
   opacity: ${({ found }) => (found ? '0.4' : '1')};
   transition: all 0.5s ease;
 `;
@@ -59,17 +60,22 @@ function RightBar(props: RightBarInterface) {
   const allFound = targets.every((target) => target.found);
   return (
     <StyledRightBar>
-      <p>Find Me: </p>
-      {targets.map((target) => (
-        <StyledImg
-          found={target.found}
-          key={target.image}
-          id={target.image}
-          src={target.image}
-          alt={target.image}
-        />
-      ))}
-      <Timer allFound={allFound} score={score} reset={reset} />
+      <AnimatePresence>
+        <p>Find Me: </p>
+        {targets.map((target) => (
+          <StyledImg
+            found={target.found}
+            key={target.image}
+            id={target.image}
+            src={target.image}
+            alt={target.image}
+            animate={{ y: 0, x: 0, opacity: 1 }}
+            initial={{ y: '-100%', opacity: 0 }}
+            exit={{ opacity: 0, y: '100%', transition: { duration: 0.1 } }}
+          />
+        ))}
+        <Timer allFound={allFound} score={score} reset={reset} />
+      </AnimatePresence>
     </StyledRightBar>
   );
 }
