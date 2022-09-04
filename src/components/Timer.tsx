@@ -45,14 +45,13 @@ function Timer({
   }, [time]);
 
   useEffect(() => {
-      setTime(0);
+    setTime(0);
   }, [reset]);
 
   return (
     <div>
-      <h1>Timer</h1>
       <div className="highScore">Highscore: {score}</div>
-      <div id="time">{time}</div>
+      <div id="time">Time: {time}</div>
     </div>
   );
 }

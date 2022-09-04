@@ -6,21 +6,21 @@ import RightBar from './RightBar';
 import LeftBar from './LeftBar';
 import ImagesContext from '../context/init';
 
-const theme = {
-  1: {
+const theme = [
+  {
     // 53	47	124
     primary: 'white',
     secondary: 'rgb(53, 47, 124)',
   },
-  2: {
+  {
     primary: 'white',
     secondary: 'rgb(178, 42, 40)',
   },
-  3: {
+  {
     primary: 'white',
     secondary: 'rgb(202, 233, 234)',
   },
-};
+];
 
 const StyledImage = styled(motion.img)`
   position: relative;
@@ -166,7 +166,7 @@ function FindMe() {
   );
 
   return (
-    <ThemeProvider theme={theme[themeState]}>
+    <ThemeProvider theme={theme[themeState - 1]}>
       <LeftBar selectLevel={selectLevel} />
       <StyledImage
         onClick={(event) => {

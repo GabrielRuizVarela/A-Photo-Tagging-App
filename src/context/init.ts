@@ -4,7 +4,6 @@ import lvl1Target1Gta from '../assets/Levels/1/targets/Gta.png';
 import lvl1Target2Kratos from '../assets/Levels/1/targets/Kratos.png';
 import lvl1Target3PrinceOfPersia from '../assets/Levels/1/targets/PrinceOfPersia.png';
 import lvl2Target2Kirby from '../assets/Levels/1/targets/Kirby.webp';
-import lvl1Target3DiddyKong from '../assets/Levels/1/targets/DiddyKong.webp';
 import level2 from '../assets/Levels/2/LVL-2.jpg';
 import lvl2Target1Fox from '../assets/Levels/2/targets/Fox.webp';
 import lvl2Target2Bomb from '../assets/Levels/2/targets/Bomb.webp';

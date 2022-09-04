@@ -12,6 +12,11 @@ const StyledRightBar = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  /* font-size: auto; */
+  * {
+    overflow-wrap: anywhere;
+    font-size: 90%;
+  }
   background-color: ${({ theme }) => theme.primary};
   img {
     width: 50%;

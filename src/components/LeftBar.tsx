@@ -13,8 +13,7 @@ const StyledNavbar = styled.nav`
   height: 100%;
   justify-content: center;
   align-items: center;
-  justify-content: center;
-  align-items: start;
+  justify-items: center;
   background-color: ${({ theme }) => theme.primary};
   border-bottom: 1px solid ${({ theme }) => theme.secondary};
   overflow: scroll;
