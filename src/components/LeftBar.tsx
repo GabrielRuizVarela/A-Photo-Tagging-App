@@ -47,6 +47,7 @@ const StyledNavbar = styled(motion.nav)`
 function NavBar({
   selectLevel,
 }: {
+  // eslint-disable-next-line no-unused-vars
   selectLevel: (event: React.MouseEvent<HTMLImageElement>) => void;
 }) {
   const images = useContext(ImagesContext);

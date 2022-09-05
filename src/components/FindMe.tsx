@@ -77,6 +77,7 @@ function FindMe() {
       if (elem.image === levelState.image) {
         return elem;
       }
+      return null;
     });
     const normalizeTargetCoord = getNormalizeTargetCoord(
       e,

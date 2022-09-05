@@ -3,9 +3,25 @@ import styled from 'styled-components';
 // eslint-disable-next-line import/no-unresolved
 import { AnimatePresence, motion } from 'framer-motion';
 
+
 interface StyleClickBoxInterface {
   readonly visible: boolean;
   readonly clickCoord: { x: number; y: number };
+  readonly variants: {
+    visible: {
+      opacity: number;
+      x: string;
+      visibility: 'visible';
+    };
+    hidden: {
+      opacity: number;
+      x: string;
+      visibility: 'hidden';
+      transition: {
+        duration: number;
+      };
+    };
+  };
 }
 
 const StyledClickBox = styled(motion.div)<StyleClickBoxInterface>`
@@ -30,6 +46,7 @@ interface ClickBoxInterface {
   readonly targets: { x: number; y: number; image: string; found: boolean }[];
   readonly clickCoord: { x: number; y: number };
   readonly visible: boolean;
+  // eslint-disable-next-line no-unused-vars
   handleClickBox: (event: React.MouseEvent<Element, MouseEvent>) => void;
 }
 
@@ -49,7 +66,7 @@ function ClickBox(props: ClickBoxInterface) {
   return (
     <StyledClickBox
       animate={visible ? 'visible' : 'hidden'}
-      variants={variants}
+      variants={variants as any}
       // transition={{ delay: 0.5 }}
       visible={visible}
       clickCoord={clickCoord}
