@@ -12,7 +12,7 @@ function Timer({
   const [time, setTime] = React.useState(0);
   const [loaded, setLoaded] = React.useState(false);
   // const [timerId, setTimerId] = React.useState(0);
-  let timerId = 0;
+  let timerId: NodeJS.Timer;
   const tick = () => {
     setTime(time + 1);
   };

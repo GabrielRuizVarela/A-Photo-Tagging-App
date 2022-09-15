@@ -69,8 +69,8 @@ function RightBar(props: RightBarInterface) {
             id={target.image}
             src={target.image}
             alt={target.image}
-            animate={{ y: 0, x: 0, opacity: 1 , transition:{duration: 0.2}}}
-            initial={{ y: '-100%', opacity: 0 }}
+            animate={{ y: 0, x: 0, transition: { duration: 0.2 } }}
+            initial={{ y: '-100%' }}
           />
         ))}
         <Timer allFound={allFound} score={score} reset={reset} />
